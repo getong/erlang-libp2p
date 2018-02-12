@@ -67,6 +67,10 @@ receive_stream(Session, TID, StreamID) ->
 
 init({Session, TID, StreamID, Flags}) ->
     gen_statem:cast(self(), {init, Flags}),
+    {LocalAddr, RemoteAddr} = libp2p_session:addr_info(Session),
+    lager:md([{stream_id, StreamID},
+              {local_addr, LocalAddr},
+              {remote_addr, RemoteAddr}]),
     {ok, connecting, #state{session=Session, stream_id=StreamID, tid=TID}}.
 
 callback_mode() -> handle_event_function.
